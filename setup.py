@@ -23,7 +23,7 @@ setup(
     description = "Rolling measures of data like standard deviation and average",
     keywords = "measures rolling",
     install_requires = [],
-    version = "0.0.2",
+    version = "0.0.3",
     author = "Egil Moeller",
     author_email = "egil@skytruth.org",
     license = "GPL",

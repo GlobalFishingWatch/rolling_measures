@@ -75,9 +75,11 @@ class Stat(object):
         self.source = source
         self.value = cls()
     def add(self, value):
-        self.value.add(value[self.source])
+        if self.source in value:
+            self.value.add(value[self.source])
     def remove(self, value):
-        self.value.remove(value[self.source])
+        if self.source in value:
+            self.value.remove(value[self.source])
     def get(self):
         return self.value.get()
 
