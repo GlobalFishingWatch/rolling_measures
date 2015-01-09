@@ -48,6 +48,7 @@ class Avg(object):
         self.count -= 1
         self.sum -= value
     def get(self):
+        if not self.count: return 0
         return self.sum/self.count
 
 class Sum(object):
