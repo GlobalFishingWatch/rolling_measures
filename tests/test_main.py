@@ -15,11 +15,17 @@ class TestMain(unittest.TestCase):
         self.assertEqual(stddev.get(), 5.0)
 
         stddev = rolling_measures.StdDev()
+        stddev.add(55)
         stddev.add(0)
         stddev.add(0)
         stddev.add(0)
         stddev.add(4)
+        stddev.remove(55)
         self.assertEqual(stddev.getSqr(), 3)
+
+        stddev = rolling_measures.StdDev()
+        self.assertEqual(stddev.getSqr(), 0)
+
 
     def test_Avg(self):
         avg = rolling_measures.Avg()
@@ -28,11 +34,16 @@ class TestMain(unittest.TestCase):
         self.assertEqual(avg.get(), 5.0)
 
         avg = rolling_measures.Avg()
+        avg.add(55)
         avg.add(0)
         avg.add(0)
         avg.add(0)
         avg.add(4)
+        avg.remove(55)
         self.assertEqual(avg.get(), 1)
+
+        avg = rolling_measures.Avg()
+        self.assertEqual(avg.get(), 0)
 
     def test_Sum(self):
         sum = rolling_measures.Sum()
@@ -41,11 +52,16 @@ class TestMain(unittest.TestCase):
         self.assertEqual(sum.get(), 10)
 
         sum = rolling_measures.Sum()
+        sum.add(55)
         sum.add(0)
         sum.add(0)
         sum.add(0)
         sum.add(4)
+        sum.remove(55)
         self.assertEqual(sum.get(), 4)
+
+        sum = rolling_measures.Sum()
+        self.assertEqual(sum.get(), 0)
 
     def test_Count(self):
         count = rolling_measures.Count()
@@ -54,11 +70,16 @@ class TestMain(unittest.TestCase):
         self.assertEqual(count.get(), 2)
 
         count = rolling_measures.Count()
+        count.add(55)
         count.add(0)
         count.add(0)
         count.add(0)
         count.add(4)
+        count.remove(55)
         self.assertEqual(count.get(), 4)
+
+        count = rolling_measures.Count()
+        self.assertEqual(count.get(), 0)
 
     def test_Stats(self):    
         stat = rolling_measures.Stats({
@@ -66,8 +87,10 @@ class TestMain(unittest.TestCase):
                 "longitude": rolling_measures.Stat("longitude", rolling_measures.Avg),
                 "sigma": rolling_measures.StatSum(rolling_measures.Stat("latitude", rolling_measures.StdDev),
                                                   rolling_measures.Stat("longitude", rolling_measures.StdDev))})
+        stat.add({'latitude': 47.0, 'longitude': 11.0})
         stat.add({'latitude': 1.0, 'longitude': 1.0})
         stat.add({'latitude': 3.0, 'longitude': 3.0})
+        stat.remove({'latitude': 47.0, 'longitude': 11.0})
 
         self.assertEqual(stat.get()['latitude'], 2.0)
         self.assertEqual(stat.get()['longitude'], 2.0)

@@ -32,7 +32,8 @@ class StdDev(AbstractStdDev):
         a = self.sqrsum/self.count
         b = (self.sum/self.count)**2
         # Handle rounding errors
-        if a < b:
+        # FIXME: find out what values this happened for and make a test...
+        if a < b: # pragma: no cover
             assert b - a < 1e10-10
             return 0.0
         return a - b
