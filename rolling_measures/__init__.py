@@ -1,6 +1,16 @@
 import math
 import operator
 
+class NegativePopulationSize(ValueError):
+    def __init__(self, typename):
+        self.typename = typename
+        ValueError.__init__(self)
+    def __str__(self):
+        return str(unicode(self))
+    def __unicode__(self):
+        return "More calls to %(type)s.remove() than to %(type)s.add()" % {"type": self.typename}
+    
+
 class AbstractStdDev(object):
     def get(self):
         return math.sqrt(self.getSqr())
@@ -23,6 +33,8 @@ class StdDev(AbstractStdDev):
         self.sum += value
         self.sqrsum += value**2
     def remove(self, value):
+        if self.count <= 0:
+            raise NegativePopulationSize("StdDev")
         self.count -= 1
         self.sum -= value
         self.sqrsum -= value**2
@@ -46,6 +58,8 @@ class Avg(object):
         self.count += 1
         self.sum += value
     def remove(self, value):
+        if self.count <= 0:
+            raise NegativePopulationSize("Avg")
         self.count -= 1
         self.sum -= value
     def get(self):
@@ -54,10 +68,15 @@ class Avg(object):
 
 class Sum(object):
     def __init__(self):
+        self.count = 0
         self.sum = 0
     def add(self, value):
+        self.count += 1
         self.sum += value
     def remove(self, value):
+        if self.count <= 0:
+            raise NegativePopulationSize("Sum")
+        self.count -= 1
         self.sum -= value
     def get(self):
         return self.sum
@@ -68,6 +87,8 @@ class Count(object):
     def add(self, value):
         self.count += 1
     def remove(self, value):
+        if self.count <= 0:
+            raise NegativePopulationSize("Sum")
         self.count -= 1
     def get(self):
         return self.count
