@@ -1,5 +1,6 @@
 import math
 import operator
+import six
 
 class NegativePopulationSize(ValueError):
     def __init__(self, typename):
@@ -10,6 +11,15 @@ class NegativePopulationSize(ValueError):
     def __unicode__(self):
         return "More calls to %(type)s.remove() than to %(type)s.add()" % {"type": self.typename}
     
+class NonPositivePopulationSize(ValueError):
+    def __init__(self, typename):
+        self.typename = typename
+        ValueError.__init__(self)
+    def __str__(self):
+        return str(unicode(self))
+    def __unicode__(self):
+        return "Need more calls to %(type)s.add() than to %(type)s.remove()" % {"type": self.typename}
+
 
 class AbstractStdDev(object):
     def get(self):
@@ -33,20 +43,20 @@ class StdDev(AbstractStdDev):
         self.sum += value
         self.sqrsum += value**2
     def remove(self, value):
-        if self.count <= 0:
-            raise NegativePopulationSize("StdDev")
+        if self.count < 1:
+            raise NonPositivePopulationSize("StdDev")
         self.count -= 1
         self.sum -= value
         self.sqrsum -= value**2
     def getSqr(self):
-        if self.count == 0:
-            return 0
+        if self.count < 1:
+            raise NonPositivePopulationSize("StdDev")
         a = self.sqrsum/self.count
         b = (self.sum/self.count)**2
         # Handle rounding errors
         # FIXME: find out what values this happened for and make a test...
         if a < b: # pragma: no cover
-            assert b - a < 1e10-10
+            assert b - a < 1e-3
             return 0.0
         return a - b
 
@@ -58,12 +68,13 @@ class Avg(object):
         self.count += 1
         self.sum += value
     def remove(self, value):
-        if self.count <= 0:
-            raise NegativePopulationSize("Avg")
+        if self.count <= 1:
+            raise NonPositivePopulationSize("Avg")
         self.count -= 1
         self.sum -= value
     def get(self):
-        if not self.count: return 0
+        if self.count < 1:
+            raise NonPositivePopulationSize("Avg")
         return self.sum/self.count
 
 class Sum(object):
@@ -87,6 +98,7 @@ class Count(object):
     def add(self, value):
         self.count += 1
     def remove(self, value):
+        # Fast failure
         if self.count <= 0:
             raise NegativePopulationSize("Sum")
         self.count -= 1
@@ -116,7 +128,11 @@ class StatSum(object):
         for stat in self.stats:
             stat.remove(value)
     def get(self):
-        return reduce(operator.add, [stat.value for stat in self.stats]).get()
+        summed = self.stats[0].value
+        for x in self.stats[1:]:
+            summed = summed + x.value
+        return summed.get()
+        # return reduce(operator.add, [stat.value for stat in self.stats]).get()
 
 class Stats(object):
     """
@@ -132,13 +148,13 @@ class Stats(object):
     def __init__(self, fieldmap):
         self.fieldmap = fieldmap
     def add(self, value):
-        for field in self.fieldmap.itervalues():
+        for field in six.itervalues(self.fieldmap):
             field.add(value)
     def remove(self, value):
-        for field in self.fieldmap.itervalues():
+        for field in six.itervalues(self.fieldmap):
             field.remove(value)
     def get(self):
         return {
             key: value.get()
             for (key, value)
-            in self.fieldmap.iteritems()}
+            in six.iteritems(self.fieldmap)}
