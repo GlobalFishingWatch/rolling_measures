@@ -23,10 +23,10 @@ setup(
     description = "Rolling measures of data like standard deviation and average",
     keywords = "measures rolling",
     install_requires = [],
-    version = "0.0.5",
+    version = "1.0.0",
     author = "Egil Moeller",
     author_email = "egil@skytruth.org",
     license = "GPL",
-    url = "https://github.com/SkyTruth/rolling_measures",
+    url = "https://github.com/GlobalFishingWatch/rolling_measures",
     packages = ['rolling_measures']
 )
