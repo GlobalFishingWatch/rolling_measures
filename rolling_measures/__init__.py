@@ -10,7 +10,7 @@ class NegativePopulationSize(ValueError):
         return str(unicode(self))
     def __unicode__(self):
         return "More calls to %(type)s.remove() than to %(type)s.add()" % {"type": self.typename}
-    
+
 class NonPositivePopulationSize(ValueError):
     def __init__(self, typename):
         self.typename = typename
@@ -32,7 +32,7 @@ class StdDevSum(AbstractStdDev):
         self.sqr = sqr
     def getSqr(self):
         return self.sqr
-        
+
 class StdDev(AbstractStdDev):
     def __init__(self):
         self.count = 0
