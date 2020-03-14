@@ -8,6 +8,14 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 ## [Unreleased]
 
+## v1.0.1 - 2020-03-14
+
+### Added
+
+* [GlobalFishingWatch/gfw-eng-tasks#34](https://github.com/GlobalFishingWatch/gfw-eng-tasks/issues/34): Adds
+    Docker support and update README.
+    py3 in travis and update tests.
+
 ## v1.0.0 - 2020-03-13
 
 ### Added

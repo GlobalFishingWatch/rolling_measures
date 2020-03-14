@@ -7,6 +7,7 @@ import os.path
 import sys
 import hashlib
 
+
 PKG_DIR = os.path.abspath(os.path.dirname(__file__))
 PKG_NAME = os.path.basename(PKG_DIR)
 
@@ -18,12 +19,17 @@ def is_python_script(script_text, filename):
     return old_is_python_script(script_text, filename)
 easy_install.is_python_script = is_python_script
 
+DEPENDENCIES = [
+    "nose",
+    "six"
+]
+
 setup(
     name = "rolling_measures",
     description = "Rolling measures of data like standard deviation and average",
     keywords = "measures rolling",
-    install_requires = [],
-    version = "1.0.0",
+    install_requires = DEPENDENCIES,
+    version = "1.0.1",
     author = "Egil Moeller",
     author_email = "egil@skytruth.org",
     license = "GPL",

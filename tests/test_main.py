@@ -1,7 +1,7 @@
 import unittest
 import rolling_measures
 
-class TestMain(unittest.TestCase):    
+class TestMain(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -24,12 +24,13 @@ class TestMain(unittest.TestCase):
         self.assertEqual(stddev.getSqr(), 3)
 
         stddev = rolling_measures.StdDev()
-        self.assertEqual(stddev.getSqr(), 0)
+        with self.assertRaises(rolling_measures.NonPositivePopulationSize):
+            stddev.getSqr()
 
         stddev = rolling_measures.StdDev()
         stddev.add(0)
         stddev.remove(0)
-        with self.assertRaises(rolling_measures.NegativePopulationSize):
+        with self.assertRaises(rolling_measures.NonPositivePopulationSize):
             stddev.remove(0)
 
     def test_Avg(self):
@@ -48,12 +49,12 @@ class TestMain(unittest.TestCase):
         self.assertEqual(avg.get(), 1)
 
         avg = rolling_measures.Avg()
-        self.assertEqual(avg.get(), 0)
+        with self.assertRaises(rolling_measures.NonPositivePopulationSize):
+            avg.get()
 
         avg = rolling_measures.Avg()
         avg.add(0)
-        avg.remove(0)
-        with self.assertRaises(rolling_measures.NegativePopulationSize):
+        with self.assertRaises(rolling_measures.NonPositivePopulationSize):
             avg.remove(0)
 
     def test_Sum(self):
@@ -104,7 +105,7 @@ class TestMain(unittest.TestCase):
         with self.assertRaises(rolling_measures.NegativePopulationSize):
             count.remove(0)
 
-    def test_Stats(self):    
+    def test_Stats(self):
         stat = rolling_measures.Stats({
                 "latitude": rolling_measures.Stat("latitude", rolling_measures.Avg),
                 "longitude": rolling_measures.Stat("longitude", rolling_measures.Avg),
@@ -120,6 +121,5 @@ class TestMain(unittest.TestCase):
         self.assertAlmostEqual(stat.get()['sigma'], 1.41421356237)
 
         stat.remove({'latitude': 0.0, 'longitude': 0.0})
-        stat.remove({'latitude': 0.0, 'longitude': 0.0})
-        with self.assertRaises(rolling_measures.NegativePopulationSize):
+        with self.assertRaises(rolling_measures.NonPositivePopulationSize):
             stat.remove({'latitude': 0.0, 'longitude': 0.0})
